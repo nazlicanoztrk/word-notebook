@@ -2,8 +2,15 @@ import { createRouter, createWebHistory } from 'vue-router'
 import CardsPage from '../pages/CardsPage.vue'
 import WordsPage from '../pages/WordsPage.vue'
 import WordsSettings from '../pages/TablePage.vue'
-import Test from '../components/Test.vue'   
+import Test from '../components/Test.vue'
+import LoginPage from '../pages/LoginPage.vue'
+
 const routes = [
+  {
+    path: '/login',
+    name: 'Login',
+    component: LoginPage
+  },
   {
     path: '/',
     name: 'Cards',
@@ -19,7 +26,7 @@ const routes = [
     name: 'WordsSettings',
     component: WordsSettings
   },
-   {
+  {
     path: '/test',
     name: 'Test',
     component: Test

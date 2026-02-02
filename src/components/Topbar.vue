@@ -1,10 +1,33 @@
 <script setup>
 import { useRouter } from 'vue-router'
+import { supabase } from '../supabase.js'
+import { Notify } from 'quasar'
 
 const router = useRouter()
 
 const navigateTo = (routeName) => {
   router.push({ name: routeName })
+}
+
+const logout = async () => {
+  try {
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
+    
+    Notify.create({
+      type: 'positive',
+      message: 'Logged out successfully',
+      position: 'top'
+    })
+    router.push('/login')
+  } catch (error) {
+    console.error('Logout error:', error)
+    Notify.create({
+      type: 'negative',
+      message: error.message,
+      position: 'top'
+    })
+  }
 }
 </script>
 
@@ -17,7 +40,7 @@ const navigateTo = (routeName) => {
       <q-btn flat @click="navigateTo('Cards')">
         Cards
       </q-btn>
-       <q-btn flat @click="navigateTo('Test')">
+      <q-btn flat @click="navigateTo('Test')">
         TEST
       </q-btn>
       <q-btn flat @click="navigateTo('Words')">
@@ -26,6 +49,8 @@ const navigateTo = (routeName) => {
       <q-btn flat @click="navigateTo('WordsSettings')">
         Edit Words
       </q-btn>
+      <q-space />
+      <q-btn flat icon="logout" @click="logout" />
     </q-bar>
   </div>
 </template>
