@@ -22,9 +22,9 @@ onMounted(async () => {
     console.log('event, session', event, session)
     user.value = session?.user ?? null;
     
-    if (event === 'SIGNED_IN') {
-      router.push('/');
-    } else if (event === 'SIGNED_OUT') {
+    if (event === 'SIGNED_OUT') {
+      router.push('/login');
+    } else if (!user.value && router.currentRoute.value.path !== '/login') {
       router.push('/login');
     }
   });
