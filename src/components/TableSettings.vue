@@ -57,7 +57,32 @@ const fetchWords = async () => {
     loading.value = false;
   }
 };
+const updateWord = async (word, field, newValue) => {
+  try {
+    const { error } = await supabase
+      .from('word_table')
+      .update({ [field]: newValue })
+      .eq('id', word.id);
+    
+    if (error) throw error;
 
+    Notify.create({
+      type: 'positive',
+      message: 'Updated successfully ✓',
+      position: 'top',
+      timeout: 1000
+    });
+    
+    await fetchWords();
+  } catch (error) {
+    console.error('Error updating word:', error);
+    Notify.create({
+      type: 'negative',
+      message: 'Error: ' + error.message,
+      position: 'top'
+    });
+  }
+};
 const initialPagination = ref({
   sortBy: 'desc',
   descending: false,
@@ -86,26 +111,34 @@ onMounted(() => {
         <q-tr :props="props">
           <q-td key="english_word" :props="props">
             {{ props.row.english_word }}
-            <q-popup-edit v-model="props.row.english_word" v-slot="scope">
-              <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+            <q-popup-edit v-model="props.row.english_word" @save="(val) => updateWord(props.row, 'english_word', val)">
+              <template v-slot="scope">
+                <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+              </template>
             </q-popup-edit>
           </q-td>
            <q-td key="english_description" :props="props">
             {{ props.row.english_description }}
-            <q-popup-edit v-model="props.row.english_description" v-slot="scope">
-              <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+            <q-popup-edit v-model="props.row.english_description" @save="(val) => updateWord(props.row, 'english_description', val)">
+              <template v-slot="scope">
+                <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+              </template>
             </q-popup-edit>
           </q-td>
           <q-td key="turkish_word" :props="props">
             {{ props.row.turkish_word }}
-            <q-popup-edit v-model="props.row.turkish_word" v-slot="scope">
-              <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+            <q-popup-edit v-model="props.row.turkish_word" @save="(val) => updateWord(props.row, 'turkish_word', val)">
+              <template v-slot="scope">
+                <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+              </template>
             </q-popup-edit>
           </q-td>
            <q-td key="turkish_description" :props="props">
             {{ props.row.turkish_description }}
-            <q-popup-edit v-model="props.row.turkish_description" v-slot="scope">
-              <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+            <q-popup-edit v-model="props.row.turkish_description" @save="(val) => updateWord(props.row, 'turkish_description', val)">
+              <template v-slot="scope">
+                <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+              </template>
             </q-popup-edit>
           </q-td>
         </q-tr>
