@@ -108,6 +108,17 @@ const changeLanguage = computed(()=>
 const shuffleWords = computed(()=> 
    wordsData.value.sort(() => Math.random() - 0.5)
 )
+
+const flippedCards = ref({});
+
+const handleCardClick = (wordId) => {
+  flippedCards.value[wordId] = !flippedCards.value[wordId];
+};
+
+const isFlipped = (wordId) => {
+  return flippedCards.value[wordId] === true;
+};
+
 onMounted(() => {
   fetchWords();
 });
@@ -180,17 +191,18 @@ onMounted(() => {
         v-for="word in paginatedWords" 
         :key="word.id" 
         class="flip-box"
+        @click="handleCardClick(word.id)"
       >
         <div class="checkbox-wrapper">
           <q-checkbox
             :model-value="word.select"
-            @click="toggleSelect(word)"
+            @click.stop="toggleSelect(word)"
             color="primary"
             size="sm"
           />
         </div>
         
-        <div class="flip-box-inner">
+        <div class="flip-box-inner" :class="{ 'flipped': isFlipped(word.id) }">
           <div class="flip-box-front">
             <h2>{{ word.english_word }}</h2>
           </div>
@@ -373,7 +385,7 @@ onMounted(() => {
   border-radius: 10px;
 }
 
-.flip-box:hover .flip-box-inner {
+.flip-box-inner.flipped {
   transform: rotateY(180deg);
 }
 
